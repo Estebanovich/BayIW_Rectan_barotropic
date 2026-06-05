@@ -1,0 +1,81 @@
+# Specific files #
+*.data
+*.meta
+STDERR.*
+mitgcmuv
+run_expand/STDOUT.*
+run_expand_nobay/STDOUT.*
+run_expand_nobay/statsMIT.txt
+compress_nc.sh
+lista_nc.txt
+monitorMITgcm
+statsMIT.txt
+run_expand_nobay/output_all.txt
+run_expand/output_all.txt
+run_expand_nobay/output.txt
+run_expand/statsMIT.txt
+input/caca.py
+input/cache/
+input/salidas_Wdb/
+input/salidas_Wdiff/
+input/todos_archivos.tar.bz2
+input/todos_archivos.txt
+input/wind_patch.py
+
+
+# Specific directories #
+__pycache__/
+.ipynb_checkpoints/
+build/
+mnc_0*/
+
+# Data files #
+*.bin
+*.pkl
+*.nc
+*.npz
+
+# Animations and figures #
+*.mp4
+*.mov
+*.pdf
+*.eps
+*.png
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

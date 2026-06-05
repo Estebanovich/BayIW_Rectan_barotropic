@@ -1,0 +1,35 @@
+# Auto-detect text files and normalize line endings to LF
+* text=auto eol=lf
+
+# Explicitly mark binary files
+*.bin binary
+*.nc  binary
+*.pkl binary
+*.npz binary
+*.data binary
+*.meta binary
+*.mp4 binary
+*.mov binary
+*.pdf binary
+*.eps binary
+*.png binary
+*.gz  binary
+*.tar binary
+*.zip binary
+*.bz2 binary
+*.7z  binary
+*.iso binary
+*.jar binary
+
+# Shell scripts — enforce LF
+*.sh  text eol=lf
+
+# Fortran source — enforce LF
+*.F   text eol=lf
+*.F90 text eol=lf
+*.f   text eol=lf
+*.f90 text eol=lf
+
+# macOS metadata — exclude from archives
+.DS_Store   export-ignore
+._*         export-ignore
