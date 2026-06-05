@@ -11,7 +11,7 @@
 # Etapa 2 (libre):    startTime=216000 -> endTime=432000 s (~5 d),  nIter0=7200
 #                     reinicia desde pickup.ckptA, viento OFF
 #
-# Requiere el ejecutable ya compilado en build/mitgcmuv (MPI, SIZE.h 2x2 = 4 ranks).
+# Requiere el ejecutable ya compilado en build/mitgcmuv (MPI, SIZE.h 5x2 = 10 ranks).
 # Compilacion previa:
 #   source /LUSTRE/HOME/esteban/MITgcm/setup_env.sh
 #   cd build && ../../../tools/genmake2 -mods=../code -mpi -of=$MITGCM_OF
@@ -22,7 +22,7 @@
 #SBATCH --job-name=BayIW_barotropic
 #SBATCH --partition=id
 #SBATCH --nodes=1
-#SBATCH --ntasks=4                 # = nPx*nPy de SIZE.h (2x2)
+#SBATCH --ntasks=10                # = nPx*nPy de SIZE.h (5x2)
 #SBATCH --cpus-per-task=1
 #SBATCH --time=2-00:00:00
 #SBATCH --output=/LUSTRE/HOME/esteban/MITgcm/verification/BayIW_Rectan_barotropic/logs/%x_%j.log
