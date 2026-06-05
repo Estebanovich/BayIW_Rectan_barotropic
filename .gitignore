@@ -79,3 +79,6 @@ mnc_0*/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# dashboard de monitoreo (datos regenerables)
+monitor_*.csv
