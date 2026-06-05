@@ -1,0 +1,90 @@
+# Model parameters
+# Continuous equation parameters
+ &PARM01
+ viscAh=100.,
+ viscAr=1.E-5,
+ no_slip_sides=.FALSE.,
+ no_slip_bottom=.FALSE.,
+ diffKhT=100.,
+ diffKrT=1.E-5,
+ diffKhS=100.,
+ diffKrS=1.E-5,
+ ivdc_kappa=1.,
+ implicitDiffusion=.TRUE.,
+ eosType='LINEAR',
+ tAlpha=2.E-4,
+ sBeta=0,
+ rhoNil=999.8,
+ gravity=9.81,
+ rigidLid=.FALSE.,
+ implicitFreeSurface=.TRUE.,
+ exactConserv=.TRUE.,
+ saltStepping=.FALSE.,
+ readBinaryPrec = 64,
+ writeBinaryPrec = 64,
+ tRef=33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 
+	33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 
+	33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 
+	33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 
+	33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 
+	33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 33.6, 
+	33.6, 
+
+
+ sRef= 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+
+ f0=6.97E-5,
+# globalFiles=.TRUE.,
+ useSingleCpuIO=.TRUE.,
+ &
+
+# Elliptic solver parameters
+ &PARM02
+ cg2dTargetResidual=1.E-7,
+ cg2dMaxIters=1000,
+ &
+
+# Time stepping parameters
+ &PARM03
+ startTime=216000.,
+ endTime=432000.,
+ pickupSuff='ckptA',
+ nIter0=7200,
+ deltaT=30.,
+ chkptFreq=86400.,
+ dumpFreq=900.,
+ monitorFreq=600.,
+ monitorSelect=2,
+# periodicExternalForcing=.TRUE.,
+# externForcingPeriod=1200.,
+# externForcingCycle=216000.,
+ &
+ 
+# Gridding parameters
+ &PARM04
+# usingSphericalPolarGrid=.TRUE.,
+ usingCartesianGrid=.TRUE.,
+ xgOrigin=-1400E3,
+ ygOrigin=-1621E3,
+ delR=1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.9, 
+	2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.5, 
+	3.8, 4.1, 4.4, 4.8, 5.2, 5.6, 6.0, 6.5, 
+	7.1, 7.6, 8.2, 8.9, 9.6, 10.4, 11.3, 12.2, 
+	13.2, 14.3, 15.4, 16.7, 18.0, 19.5, 21.1, 22.8, 
+	24.6, 26.6, 28.8, 31.1, 33.7, 36.4, 39.3, 42.5, 
+	45.8,  
+ delYFile = '../input/bahia_01_expand_dy.bin',
+ delXFile = '../input/bahia_01_expand_dx.bin',
+ &
+
+ &PARM05
+ bathyFile='../input/bahia_01_expand_bat.bin',
+# meridWindFile='../input/merid_local_bay_560x352.bin', 
+# hydrogThetaFile='../input/barotropic_temp_50zlev_560x352.bin',
+# hydrogSaltFile='../input/barotropic_salt_50zlev_560x352.bin',
+ &
+

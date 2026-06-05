@@ -236,6 +236,21 @@ cp ../build/mitgcmuv .
 mpirun -np 4 ./mitgcmuv > output.txt
 ```
 
+### Full 2-stage run on the cluster (SLURM)
+
+`submit_2stage_barotropic.slurm` automates the complete two-stage strategy for both
+`run_expand/` (with bay) and `run_expand_nobay/` (control), using the prebuilt MPI executable:
+
+```bash
+sbatch submit_2stage_barotropic.slurm
+```
+
+It swaps `data.stage1` (forced, 0 → 216 000 s, writes `pickup.ckptA`) and `data.stage2`
+(free restart, 216 000 → 432 000 s) in each run directory, checks for `NORMAL END`, and prints
+`theta_min/max` after each stage as a barotropic sanity check (should stay 33.6). NetCDF output is
+kept in `OUT_stage1/` and `OUT_stage2/`. Compile the model first (see above); the `data.stage1` /
+`data.stage2` files live in each run directory.
+
 ---
 
 ## Output
