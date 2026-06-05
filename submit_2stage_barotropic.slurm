@@ -99,8 +99,12 @@ for DIR in "$EXP/run_expand" "$EXP/run_expand_nobay"; do
             echo "ERROR: la etapa 1 en $(basename "$DIR") no produjo $STAGE1_PICKUP"
             exit 3
         fi
+    fi
+
+    # archivar salida NetCDF de la etapa 1 (idempotente: tambien si se salto arriba)
+    if ls mnc_* >/dev/null 2>&1; then
         mkdir -p OUT_stage1
-        for m in mnc_*; do [ -e "$m" ] && mv "$m" OUT_stage1/; done
+        for m in mnc_*; do mv "$m" OUT_stage1/; done
     fi
 
     # ---- ETAPA 2: libre, restart desde pickup.0000007200, viento OFF -----
