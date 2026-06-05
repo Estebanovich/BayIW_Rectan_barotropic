@@ -52,7 +52,7 @@
  &PARM03
  startTime=216000.,
  endTime=432000.,
- pickupSuff='ckptA',
+# pickupSuff no usado: reinicia desde pickup.0000007200 (escrito por etapa 1) via nIter0
  nIter0=7200,
  deltaT=30.,
  chkptFreq=86400.,

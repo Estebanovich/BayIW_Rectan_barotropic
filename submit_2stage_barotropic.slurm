@@ -77,30 +77,40 @@ run_stage () {
     echo "<<< $(basename "$dir") — $tag   fin: $(date)"
 }
 
+# iteracion final de la etapa 1 (= endTime/deltaT = 216000/30) -> pickup permanente
+STAGE1_PICKUP="pickup.0000007200.data"
+
 # ---------------------------------------------------------------------------
+# Reanudable: salta una etapa si ya termino (NORMAL END) en una corrida previa.
 for DIR in "$EXP/run_expand" "$EXP/run_expand_nobay"; do
     echo "==================================================================="
     echo "### CASO: $(basename "$DIR") ###"
     cd "$DIR"
 
-    # limpieza previa (solo al inicio del caso, NO entre etapas)
-    rm -f pickup* output*.txt STDOUT.* STDERR.* PHref* RhoRef.* 2>/dev/null || true
-    rm -rf mnc_* OUT_stage1 2>/dev/null || true
-
-    # ---- ETAPA 1: forzada, escribe pickup.ckptA --------------------------
-    run_stage "$DIR" stage1 "$DIR/data.stage1"
-    if ! ls "$DIR"/pickup.ckptA.data >/dev/null 2>&1; then
-        echo "ERROR: la etapa 1 en $(basename "$DIR") no produjo pickup.ckptA"
-        exit 3
+    # ---- ETAPA 1: forzada, escribe pickup.0000007200 ---------------------
+    if [ -f "$STAGE1_PICKUP" ] && grep -q "NORMAL END" output_stage1.txt 2>/dev/null; then
+        echo "  [skip] etapa 1 ya completa ($STAGE1_PICKUP presente)"
+    else
+        # arranque limpio de la etapa 1
+        rm -f pickup* PHref* RhoRef.* 2>/dev/null || true
+        rm -rf mnc_* OUT_stage1 2>/dev/null || true
+        run_stage "$DIR" stage1 "$DIR/data.stage1"
+        if [ ! -f "$STAGE1_PICKUP" ]; then
+            echo "ERROR: la etapa 1 en $(basename "$DIR") no produjo $STAGE1_PICKUP"
+            exit 3
+        fi
+        mkdir -p OUT_stage1
+        for m in mnc_*; do [ -e "$m" ] && mv "$m" OUT_stage1/; done
     fi
-    # preservar la salida NetCDF de la etapa 1 antes de correr la etapa 2
-    mkdir -p OUT_stage1
-    for m in mnc_*; do [ -e "$m" ] && mv "$m" OUT_stage1/; done
 
-    # ---- ETAPA 2: libre, restart desde ckptA, viento OFF -----------------
-    run_stage "$DIR" stage2 "$DIR/data.stage2"
-    mkdir -p OUT_stage2
-    for m in mnc_*; do [ -e "$m" ] && mv "$m" OUT_stage2/; done
+    # ---- ETAPA 2: libre, restart desde pickup.0000007200, viento OFF -----
+    if grep -q "NORMAL END" output_stage2.txt 2>/dev/null; then
+        echo "  [skip] etapa 2 ya completa"
+    else
+        run_stage "$DIR" stage2 "$DIR/data.stage2"
+        mkdir -p OUT_stage2
+        for m in mnc_*; do [ -e "$m" ] && mv "$m" OUT_stage2/; done
+    fi
 
     echo "### $(basename "$DIR"): 2 etapas COMPLETAS ###"
 done
