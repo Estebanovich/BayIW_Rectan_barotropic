@@ -1,0 +1,79 @@
+#!/bin/bash
+#==============================================================================
+#  Build options: ifort (Intel oneAPI 2022) + Intel MPI 2021.5
+#  Plataforma : ometeotl.atmosfera.unam.mx  (Linux AMD64, UNAM)
+#  Derivado de: linux_amd64_ifort+impi  (optfile oficial MITgcm)
+#  NetCDF     : /opt/librerias/intel/netcdf-4.4.1.1 (+ HDF5 1.8.19)
+#
+#  Requiere haber cargado el entorno antes de genmake2:
+#     source /LUSTRE/HOME/esteban/MITgcm/setup_env.sh
+#==============================================================================
+
+if test "x$MPI" = xtrue ; then
+  CC=${MPICC:=mpiicc}
+  FC=${MPIFC:=mpiifort}
+  F90C=${MPIF90C:=mpiifort}
+  LINK="$F90C -shared-intel -no-ipo"
+else
+  CC=icc
+  FC=ifort
+  F90C=ifort
+  LINK="$F90C -shared-intel"
+fi
+
+DEFINES='-DWORDLENGTH=4'
+F90FIXEDFORMAT='-fixed -Tf'
+EXTENDED_SRC_FLAG='-132'
+GET_FC_VERSION="--version"
+OMPFLAG='-qopenmp'
+
+NOOPTFLAGS='-O0 -g'
+NOOPTFILES=''
+
+if test "x$GENERIC" != x ; then
+    PROCF=-axSSE4.2,SSE4.1,SSSE3,SSE3,SSE2
+else
+    PROCF=-xCORE-AVX2
+fi
+
+CFLAGS="-O0 -ip -m64 $PROCF"
+FFLAGS="$FFLAGS -m64 -convert big_endian -assume byterecl"
+#- Para configuraciones grandes (memoria > 2GB por proceso):
+ CFLAGS="$CFLAGS -mcmodel=medium"
+ FFLAGS="$FFLAGS -mcmodel=medium"
+
+if test "x$IEEE" = x ; then     #- con optimizacion (produccion):
+    FOPTIM="-O2 -align -ip -fp-model source $PROCF"
+else
+  if test "x$DEVEL" = x ; then  #- sin optimizacion + IEEE :
+    FOPTIM="-O0 -fp-model source -noalign $PROCF"
+  else                          #- opciones de desarrollo/depuracion:
+    FOPTIM="-O0 -noalign -g -traceback $PROCF"
+    NOOPTFLAGS=$FOPTIM
+    NOOPTFILES='adread_adwrite.F'
+    FOPTIM="$FOPTIM -warn all -warn nounused"
+    FOPTIM="$FOPTIM -fpe0 -ftz -fp-stack-check -check all -ftrapuv"
+  fi
+fi
+
+F90FLAGS=$FFLAGS
+F90OPTIM=$FOPTIM
+
+#-- NetCDF + HDF5 (rutas fijas del sistema ometeotl) -------------------------
+NETCDF_ROOT=${NETCDF_ROOT:=/opt/librerias/intel/netcdf-4.4.1.1}
+HDF5_ROOT=${HDF5_ROOT:=/opt/librerias/intel/hdf5-1.8.19}
+INCLUDEDIRS="${NETCDF_ROOT}/include"
+INCLUDES="-I${NETCDF_ROOT}/include"
+LIBS="-L${NETCDF_ROOT}/lib -L${HDF5_ROOT}/lib"
+
+#-- Intel MPI include --------------------------------------------------------
+if [ -n "$I_MPI_ROOT" -a -z "$MPI_INC_DIR" ]; then
+    MPI_INC_DIR="$I_MPI_ROOT/include"
+    [ -d "$I_MPI_ROOT/intel64/include" ] && MPI_INC_DIR="$I_MPI_ROOT/intel64/include"
+fi
+
+if [ -n "$MPI_INC_DIR" -a "x$MPI" = xtrue ] ; then
+    INCLUDES="$INCLUDES -I$MPI_INC_DIR"
+    INCLUDEDIRS="$INCLUDEDIRS $MPI_INC_DIR"
+    MPIINCLUDEDIR="$MPI_INC_DIR"
+fi
