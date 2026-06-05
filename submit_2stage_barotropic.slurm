@@ -27,7 +27,7 @@
 #SBATCH --time=2-00:00:00
 #SBATCH --output=/LUSTRE/HOME/esteban/MITgcm/verification/BayIW_Rectan_barotropic/logs/%x_%j.log
 #SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=bongoluna101@gmail.com
+#SBATCH --mail-user=estebanci@atmosfera.unam.mx
 
 set -euo pipefail
 
