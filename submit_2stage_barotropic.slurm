@@ -29,13 +29,17 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=estebanci@atmosfera.unam.mx
 
-set -euo pipefail
+set -eo pipefail   # NB: sin '-u' (nounset): los scripts de entorno de Intel
+                   # referencian variables sin asignar y abortarian el job.
 
 EXP=/LUSTRE/HOME/esteban/MITgcm/verification/BayIW_Rectan_barotropic
 NP=${SLURM_NTASKS:-4}
 
 # --- Entorno Intel (ifort + Intel MPI 2021.5 + NetCDF 4.4.1.1) --------------
+# vars.sh de Intel MPI no es 'errexit/nounset clean' -> sourcearlo relajado
+set +e
 source /LUSTRE/HOME/esteban/MITgcm/setup_env.sh
+set -e
 ulimit -n 6000 || true
 
 EXE=$EXP/build/mitgcmuv
