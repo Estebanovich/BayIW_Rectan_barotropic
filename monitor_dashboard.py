@@ -17,7 +17,7 @@ Salida:
   monitor_<caso>.csv           (historial acumulado por caso)
 Para reiniciar el historial: borra los monitor_<caso>.csv.
 """
-import os, re, sys, csv, time
+import os, re, sys, csv, time, glob, shutil
 
 import matplotlib
 matplotlib.use("Agg")
@@ -115,12 +115,24 @@ def load_all(dirs):
     data = {}
     for d in dirs:
         name = os.path.basename(d)
-        f = os.path.join(d, "STDOUT.0000")
-        parsed = parse_stdout(f) if os.path.isfile(f) else None
-        if parsed is not None and len(parsed["time_tsnumber"]):
-            data[name] = merge_csv(name, parsed)        # acumula + devuelve historial
-        elif os.path.isfile(csv_path(name)):
-            data[name] = _arrs_from_rows(load_csv(name))  # solo historial guardado
+        live = os.path.join(d, "STDOUT.0000")
+        # auto-archivo: preserva el STDOUT vivo de la etapa actual antes de que
+        # la etapa siguiente lo sobreescriba (evita huecos en las series)
+        if os.path.isfile(live):
+            try:
+                shutil.copyfile(live, os.path.join(d, f"STDOUT_{which_stage(d)}.0000"))
+            except OSError:
+                pass
+        # leer vivo + todos los archivos por etapa y mezclar al CSV
+        files = sorted(glob.glob(os.path.join(d, "STDOUT_*.0000"))) + [live]
+        got = False
+        for f in files:
+            if os.path.isfile(f):
+                parsed = parse_stdout(f)
+                if parsed is not None and len(parsed["time_tsnumber"]):
+                    merge_csv(name, parsed); got = True
+        if got or os.path.isfile(csv_path(name)):
+            data[name] = _arrs_from_rows(load_csv(name))
     return data
 
 

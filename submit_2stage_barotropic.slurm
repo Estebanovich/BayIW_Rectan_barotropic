@@ -69,6 +69,9 @@ run_stage () {
         tail -40 "output_${tag}.txt"
         exit 2
     fi
+    # archivar el STDOUT de esta etapa (sobrevive al 'rm STDOUT.*' de la etapa
+    # siguiente) para que el dashboard reconstruya las series sin huecos
+    cp -f STDOUT.0000 "STDOUT_${tag}.0000" 2>/dev/null || true
     # chequeo barotropico: la temperatura debe seguir uniforme (=33.6)
     local tmin tmax
     tmax=$(grep "dynstat_theta_max" STDOUT.0000 2>/dev/null | tail -1 | awk '{print $NF}')
